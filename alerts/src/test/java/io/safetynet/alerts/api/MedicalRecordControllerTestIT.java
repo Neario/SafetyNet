@@ -65,8 +65,8 @@ public class MedicalRecordControllerTestIT {
     @Test
     public void testDeleteMedicalRecord() throws Exception {
         MedicalRecordDto medicalRecordDto = new MedicalRecordDto(
-                "John",
-                "Boyd",
+                "mika",
+                "mika",
                 null,
                 null,
                 null);
