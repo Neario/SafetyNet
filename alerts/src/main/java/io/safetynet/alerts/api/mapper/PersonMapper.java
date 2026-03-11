@@ -1,7 +1,6 @@
 package io.safetynet.alerts.api.mapper;
 
 import io.safetynet.alerts.api.dto.PersonDto;
-import io.safetynet.alerts.api.dto.PersonUpdateDto;
 import io.safetynet.alerts.model.Person;
 import org.springframework.stereotype.Component;
 
@@ -33,11 +32,11 @@ public class PersonMapper {
         return person;
     }
 
-    public void update(Person person, PersonUpdateDto personUpdateDto) {
+    public void update(Person person, PersonDto personDto) {
 
-        person.setEmail(personUpdateDto.getEmail());
-        person.setAddress(personUpdateDto.getAddress());
-        person.setCity(personUpdateDto.getCity());
-        person.setPhone(personUpdateDto.getPhone());
+        person.setEmail(personDto.getEmail());
+        person.setAddress(personDto.getAddress());
+        person.setCity(personDto.getCity());
+        person.setPhone(personDto.getPhone());
     }
 }

@@ -1,11 +1,10 @@
 package io.safetynet.alerts.api.controller;
 
 import io.safetynet.alerts.api.dto.PersonDto;
-import io.safetynet.alerts.model.Person;
+import io.safetynet.alerts.api.dto.PersonUpdateDto;
 import io.safetynet.alerts.service.PersonService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,4 +20,18 @@ public class PersonController {
         return service.findAll();
     }
 
+    @PostMapping("/person")
+    public PersonDto create(@RequestBody PersonDto personDto) {
+        return service.create(personDto);
+    }
+
+    @PutMapping("/person")
+    public PersonDto update(@RequestBody PersonDto personDto) {
+        return service.update(personDto);
+    }
+
+    @DeleteMapping("/person")
+    public void delete(@RequestBody PersonDto personDto) {
+        service.delete(personDto);
+    }
 }

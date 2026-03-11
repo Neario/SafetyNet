@@ -7,9 +7,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PersonControllerTest {
+public class MedicalRecordControllerTestIT {
     @Autowired
     private MockMvc mockMvc;
-
-
 }
