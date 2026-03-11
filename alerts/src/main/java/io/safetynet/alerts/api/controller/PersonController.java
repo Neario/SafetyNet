@@ -1,7 +1,6 @@
 package io.safetynet.alerts.api.controller;
 
 import io.safetynet.alerts.api.dto.PersonDto;
-import io.safetynet.alerts.api.dto.PersonUpdateDto;
 import io.safetynet.alerts.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
