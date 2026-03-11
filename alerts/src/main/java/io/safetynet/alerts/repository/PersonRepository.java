@@ -24,10 +24,6 @@ public class PersonRepository {
     }
 
     public Person create(Person person) {
-        boolean exists = find(person.getFirstName(), person.getLastName()).isPresent();
-        if (exists) {
-            throw new RuntimeException("Person already exists");
-        }
         findAll().add(person);
         databaseLoader.save();
         return person;
