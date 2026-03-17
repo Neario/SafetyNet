@@ -1,6 +1,7 @@
 package io.safetynet.alerts.api.controller;
 
 import io.safetynet.alerts.api.dto.FireStationDto;
+import io.safetynet.alerts.api.dto.FireStationPersonInfoDto;
 import io.safetynet.alerts.service.FireStationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,6 +20,27 @@ public class FireStationController {
     @GetMapping("/firestations")
     public List<FireStationDto> index() {
         return fireStationService.findAll();
+    }
+
+    @GetMapping("/firestation")
+    public ResponseEntity<?> getByStation(@RequestParam String station) {
+        try{
+            FireStationPersonInfoDto result = fireStationService.getPersonsByStation(station);
+            log.info(
+                    "Firestation {} returned {} persons",
+                    station,
+                    result.getPersons().size()
+            );
+            return ResponseEntity.ok(result);
+        } catch (Exception e){
+            log.error(
+                    "Error /firestation {} : {}",
+                    station,
+                    e.getMessage()
+            );
+
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/firestation")

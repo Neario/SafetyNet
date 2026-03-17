@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -21,6 +22,11 @@ public class FireStationRepository {
         return findAll().stream().filter(fireStation ->
                         fireStation.getAddress().equals(address))
                 .findFirst();
+    }
+
+    public List<String> findByStation(String station) {
+        return databaseLoader.getDatas().getFirestations().stream().filter(fireStation ->
+                Objects.equals(fireStation.getStation(), station)).map(FireStation::getAddress).toList();
     }
 
     public FireStation create(FireStation fireStation) {

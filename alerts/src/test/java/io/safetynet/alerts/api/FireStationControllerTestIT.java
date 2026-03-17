@@ -1,7 +1,6 @@
 package io.safetynet.alerts.api;
 
 import io.safetynet.alerts.api.dto.FireStationDto;
-import io.safetynet.alerts.api.dto.PersonDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -23,6 +23,11 @@ public class PersonRepository {
                 .findFirst();
     }
 
+    public List<Person> findByAddress(List<String> datas) {
+        return databaseLoader.getDatas().getPersons().stream().filter(person ->
+                datas.contains(person.getAddress())).toList();
+    }
+
     public Person create(Person person) {
         findAll().add(person);
         databaseLoader.save();
