@@ -24,7 +24,7 @@ public class PersonController {
     }
 
     @PostMapping("/person")
-    public ResponseEntity<String> create(@RequestBody PersonDto personDto) {
+    public ResponseEntity<?> create(@RequestBody PersonDto personDto) {
         try {
             PersonDto result = service.create(personDto);
             log.info(
@@ -46,12 +46,44 @@ public class PersonController {
     }
 
     @PutMapping("/person")
-    public PersonDto update(@RequestBody PersonDto personDto) {
-        return service.update(personDto);
+    public ResponseEntity<?> update(@RequestBody PersonDto personDto) {
+        try {
+            PersonDto result = service.update(personDto);
+            log.info(
+                    "Person updated {} {}",
+                    personDto.getFirstName(),
+                    personDto.getLastName()
+            );
+            return ResponseEntity.status(HttpStatus.OK).body(result.getFirstName() + " " + result.getLastName());
+        } catch (Exception e) {
+            log.error(
+                    "Error updating  person {} {} : {}",
+                    personDto.getFirstName(),
+                    personDto.getLastName(),
+                    e.getMessage()
+            );
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/person")
-    public void delete(@RequestBody PersonDto personDto) {
-        service.delete(personDto);
+    public ResponseEntity<?> delete(@RequestBody PersonDto personDto) {
+        try {
+            service.delete(personDto);
+            log.info(
+                    "Person deleted {} {}",
+                    personDto.getFirstName(),
+                    personDto.getLastName()
+            );
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error(
+                    "Error deleting person {} {} : {}",
+                    personDto.getFirstName(),
+                    personDto.getLastName(),
+                    e.getMessage()
+            );
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

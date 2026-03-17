@@ -40,7 +40,7 @@ public class PersonControllerTestIT {
                                 .content(
                                         objectMapper.writeValueAsString(personDto)
                                 )
-                ).andExpect(status().isOk());
+                ).andExpect(status().isCreated());
     }
 
     @Test

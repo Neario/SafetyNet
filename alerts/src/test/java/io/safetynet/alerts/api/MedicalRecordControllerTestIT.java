@@ -1,7 +1,6 @@
 package io.safetynet.alerts.api;
 
 import io.safetynet.alerts.api.dto.MedicalRecordDto;
-import io.safetynet.alerts.api.dto.PersonDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,7 +40,7 @@ public class MedicalRecordControllerTestIT {
                         .content(
                                 objectMapper.writeValueAsString(medicalRecordDto)
                         )
-        ).andExpect(status().isOk());
+        ).andExpect(status().isCreated());
     }
 
     @Test

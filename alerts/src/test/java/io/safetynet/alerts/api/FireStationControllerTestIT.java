@@ -37,7 +37,7 @@ public class FireStationControllerTestIT {
                         .content(
                                 objectMapper.writeValueAsString(fireStationDto)
                         )
-        ).andExpect(status().isOk());
+        ).andExpect(status().isCreated());
     }
 
     @Test
