@@ -1,5 +1,6 @@
 package io.safetynet.alerts.api.controller;
 
+import io.safetynet.alerts.api.dto.ChildAlertDto;
 import io.safetynet.alerts.api.dto.PersonDto;
 import io.safetynet.alerts.service.PersonService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,21 @@ public class PersonController {
     @GetMapping("/persons")
     public List<PersonDto> index() {
         return service.findAll();
+    }
+
+    @GetMapping("/childAlert")
+    public ResponseEntity<?> childAlert(@RequestParam String address) {
+        try {
+            List<ChildAlertDto> result = service.getChildrenByAddress(address);
+            log.info("ChildAlert address : {}", address);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error(
+                    "Error childAlert {}",
+                    address
+            );
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/person")
