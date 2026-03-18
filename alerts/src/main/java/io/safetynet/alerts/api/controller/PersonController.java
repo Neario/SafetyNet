@@ -2,6 +2,7 @@ package io.safetynet.alerts.api.controller;
 
 import io.safetynet.alerts.api.dto.ChildAlertDto;
 import io.safetynet.alerts.api.dto.PersonDto;
+import io.safetynet.alerts.api.dto.PersonInfoWithMedicationDto;
 import io.safetynet.alerts.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -34,6 +35,43 @@ public class PersonController {
             log.error(
                     "Error childAlert {}",
                     address
+            );
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/personInfo")
+    public ResponseEntity<?> getPersonInfo(@RequestParam String lastName) {
+        try{
+            List<PersonInfoWithMedicationDto> result = service.getPersonByLastName(lastName);
+            log.info(
+                    "PersonInfo with lastname {}",
+                    lastName
+            );
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error(
+                    "Error personInfo {}",
+                    lastName
+            );
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/communityEmail")
+    public ResponseEntity<?> getCommunityEmail(@RequestParam String city) {
+        try {
+            List<String> result = service.getEmailsByCity(city);
+            log.info(
+                    "Emails with city {}",
+                    city
+            );
+            return ResponseEntity.ok(result);
+        }catch (Exception e){
+            log.error(
+                    "Error Emails with city {} : {}",
+                    city,
+                    e.getMessage()
             );
             return ResponseEntity.badRequest().body(e.getMessage());
         }

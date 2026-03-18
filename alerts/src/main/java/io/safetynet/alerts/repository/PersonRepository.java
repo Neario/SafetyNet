@@ -28,6 +28,16 @@ public class PersonRepository {
                 datas.contains(person.getAddress())).toList();
     }
 
+    public List<Person> findByLastName(String lastName) {
+        return databaseLoader.getDatas().getPersons().stream().filter(person ->
+                lastName.equals(person.getLastName())).toList();
+    }
+
+    public List<Person> findByCity(String city) {
+        return databaseLoader.getDatas().getPersons().stream().filter(person ->
+                city.equals(person.getCity())).toList();
+    }
+
     public Person create(Person person) {
         findAll().add(person);
         databaseLoader.save();

@@ -29,6 +29,17 @@ public class FireStationRepository {
                 Objects.equals(fireStation.getStation(), station)).map(FireStation::getAddress).toList();
     }
 
+    public FireStation findByAddress(String address) {
+        return databaseLoader.getDatas().getFirestations().stream().filter(fireStation ->
+                fireStation.getAddress().equals(address)).findFirst().orElse(null);
+    }
+
+    public List<String> findByStations(List<String> stations) {
+        return databaseLoader.getDatas().getFirestations().stream().filter(
+                fireStation ->stations.contains(fireStation.getStation())
+        ).map(FireStation::getAddress).toList();
+    }
+
     public FireStation create(FireStation fireStation) {
         boolean exists = find(fireStation.getAddress()).isPresent();
         if (exists) {
