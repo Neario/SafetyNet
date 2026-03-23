@@ -30,7 +30,7 @@ public class MedicalRecordService {
     }
 
     public MedicalRecordDto update(MedicalRecordDto medicalRecordDto) {
-        MedicalRecord medicalRecord = medicalRecordRepository.find(
+        MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(
                 medicalRecordDto.getFirstName(),
                 medicalRecordDto.getLastName()
         ).orElseThrow(
@@ -42,7 +42,7 @@ public class MedicalRecordService {
     }
 
     public void delete(MedicalRecordDto medicalRecordDto) {
-        MedicalRecord medicalRecord = medicalRecordRepository.find(
+        MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(
                 medicalRecordDto.getFirstName(),
                 medicalRecordDto.getLastName()
         ).orElseThrow(

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,7 +36,7 @@ public class PersonService {
     }
 
     public PersonDto create(PersonDto personDto) {
-        boolean exists = repository.find(personDto.getFirstName(), personDto.getLastName()).isPresent();
+        boolean exists = repository.findByFirstNameAndLastName(personDto.getFirstName(), personDto.getLastName()).isPresent();
         if (exists) {
             throw new RuntimeException("Person already exists");
         }
@@ -47,7 +46,7 @@ public class PersonService {
     }
 
     public PersonDto update(PersonDto personDto) {
-        Person person = repository.find(
+        Person person = repository.findByFirstNameAndLastName(
                         personDto.getFirstName(),
                         personDto.getLastName()
                 ).orElseThrow(
@@ -59,7 +58,7 @@ public class PersonService {
     }
 
     public void delete(PersonDto personDto) {
-        Person person = repository.find(
+        Person person = repository.findByFirstNameAndLastName(
                 personDto.getFirstName(),
                 personDto.getLastName()
         ).orElseThrow(
@@ -71,7 +70,7 @@ public class PersonService {
     public List<ChildAlertDto> getChildrenByAddress(String address) {
         List<Person> persons = repository.findByAddress(List.of(address));
         List<MedicalRecord> medicalRecords = persons.stream().map(person ->
-                        medicalRecordRepository.find(person.getFirstName(), person.getLastName()).orElse(null))
+                        medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()).orElse(null))
                 .filter(Objects::nonNull).toList();
 
         return medicalRecords.stream().map(medicalRecord -> {
@@ -93,7 +92,7 @@ public class PersonService {
     public List<PersonInfoWithMedicationDto> getPersonByLastName(String lastName) {
         List<Person> persons = repository.findByLastName(lastName);
         List<PersonInfoWithMedicationDto> personsInfoWithMedicationDto =  persons.stream().map(person -> {
-            MedicalRecord medicalRecord = medicalRecordRepository.find(person.getFirstName(),person.getLastName()).orElse(null);
+            MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(),person.getLastName()).orElse(null);
             if (medicalRecord == null) {
                 return null;
             }
@@ -111,9 +110,10 @@ public class PersonService {
 
     public List<String> getEmailsByCity(String city) {
         List<Person> persons = repository.findByCity(city);
-        if (persons.isEmpty()) {
-            throw new RuntimeException("Person with city : " + city + " not found");
-        }
+        // todo : si pas de mails trouvés , retourne une liste vide
+//        if (persons.isEmpty()) {
+//            throw new RuntimeException("Person with city : " + city + " not found");
+//        }
         return persons.stream().map(Person::getEmail).toList();
     }
 }

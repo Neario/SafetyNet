@@ -73,7 +73,7 @@ public class PersonServiceTest {
         );
         Person person = new Person();
 
-        when(repository.find("Mika", "Mika")).thenReturn(Optional.of(person));
+        when(repository.findByFirstNameAndLastName("Mika", "Mika")).thenReturn(Optional.of(person));
         when(mapper.toDto(person)).thenReturn(personDto);
 
         PersonDto result = service.update(personDto);
@@ -94,7 +94,7 @@ public class PersonServiceTest {
                 null
         );
         Person person = new Person();
-        when(repository.find("Mika", "Mika")).thenReturn(Optional.of(person));
+        when(repository.findByFirstNameAndLastName("Mika", "Mika")).thenReturn(Optional.of(person));
 
         service.delete(personDto);
 
@@ -105,7 +105,7 @@ public class PersonServiceTest {
     @MethodSource("fareArguments")
     public void processChildAlert(Person person, MedicalRecord medicalRecord) {
         when(repository.findByAddress(List.of("1509 Culver St"))).thenReturn(List.of(person));
-        when(medicalRecordRepository.find("Mika","Boyd")).thenReturn(Optional.of(medicalRecord));
+        when(medicalRecordRepository.findByFirstNameAndLastName("Mika","Boyd")).thenReturn(Optional.of(medicalRecord));
 
         List<ChildAlertDto> result = service.getChildrenByAddress("1509 Culver St");
 
@@ -117,7 +117,7 @@ public class PersonServiceTest {
     public void processPersonInfoByLastName(Person person, MedicalRecord medicalRecord) {
 
         when(repository.findByLastName("Boyd")).thenReturn(List.of(person));
-        when(medicalRecordRepository.find("Mika", "Boyd")).thenReturn(Optional.of(medicalRecord));
+        when(medicalRecordRepository.findByFirstNameAndLastName("Mika", "Boyd")).thenReturn(Optional.of(medicalRecord));
 
         List<PersonInfoWithMedicationDto> result = service.getPersonByLastName("Boyd");
 

@@ -3,7 +3,6 @@ package io.safetynet.alerts.api.controller;
 import io.safetynet.alerts.api.dto.FireDto;
 import io.safetynet.alerts.api.dto.FireStationDto;
 import io.safetynet.alerts.api.dto.FireStationPersonInfoDto;
-import io.safetynet.alerts.api.dto.PersonFireDto;
 import io.safetynet.alerts.service.FireStationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -12,145 +11,96 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
+/**
+ * RestController for FireStation endPoints
+ */
 @Log4j2
 @RestController
 @RequiredArgsConstructor
 public class FireStationController {
     private final FireStationService fireStationService;
 
+    /**
+     * Return  all FireStations
+     * @return list of station
+     */
     @GetMapping("/firestations")
     public List<FireStationDto> index() {
         return fireStationService.findAll();
     }
 
+
+    /**
+     * Return a FireStation
+     * @param station station number
+     * @return FireStation asked
+     */
     @GetMapping("/firestation")
-    public ResponseEntity<?> getByStation(@RequestParam String station) {
-        try{
-            FireStationPersonInfoDto result = fireStationService.getPersonsByStation(station);
-            log.info(
-                    "Firestation {} returned {} persons",
-                    station,
-                    result.getPersons().size()
-            );
-            return ResponseEntity.ok(result);
-        } catch (Exception e){
-            log.error(
-                    "Error /firestation {} : {}",
-                    station,
-                    e.getMessage()
-            );
-
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<FireStationPersonInfoDto> getByStation(@RequestParam String station) {
+        return ResponseEntity.ok(fireStationService.getPersonsByStation(station));
     }
 
+    /**
+     * Create a FireStation
+     * @param fireStationDto station data (address and number)
+     * @return FireStation created
+     */
     @PostMapping("/firestation")
-    public ResponseEntity<?> create(@RequestBody FireStationDto fireStationDto) {
-        try{
-            FireStationDto result = fireStationService.create(fireStationDto);
-            log.info(
-                    "FireStation created {}",
-                    fireStationDto.getStation()
-            );
-            return ResponseEntity.status(HttpStatus.CREATED).body(result.getStation());
-        }catch (Exception e) {
-            log.error(
-                    "Error created FireStation {}",
-                    fireStationDto.getStation()
-            );
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
-        }
+    public ResponseEntity<FireStationDto> create(@RequestBody FireStationDto fireStationDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(fireStationService.create(fireStationDto));
+
     }
 
+    /**
+     * Update FireStation
+     * @param fireStationDto FireStation data(address with new number)
+     * @return FireStation updated
+     */
     @PutMapping("/firestation")
-    public ResponseEntity<?> update(@RequestBody FireStationDto fireStationDto) {
-        try{
-            FireStationDto result = fireStationService.update(fireStationDto);
-            log.info(
-                    "FireStation updated {}",
-                    fireStationDto.getStation()
-            );
-            return ResponseEntity.status(HttpStatus.OK).body(result.getStation());
-        }catch (Exception e) {
-            log.error(
-                    "Error updated FireStation {}",
-                    fireStationDto.getStation()
-            );
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<FireStationDto> update(@RequestBody FireStationDto fireStationDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(fireStationService.update(fireStationDto));
     }
 
+    /**
+     * Delete FireStation
+     * @param fireStationDto FireStation data (address)
+     * @return Response HTTP
+     */
     @DeleteMapping("/firestation")
-    public ResponseEntity<?> delete(@RequestBody FireStationDto fireStationDto) {
-        try {
-            fireStationService.delete(fireStationDto);
-            log.info(
-                    "fireStation deleted {}",
-                    fireStationDto.getStation()
-            );
-            return  ResponseEntity.status(HttpStatus.OK).body(fireStationDto.getStation());
-        } catch (Exception e) {
-            log.error(
-                    "Error deleting fireStation {} : {}",
-                    fireStationDto.getStation(),
-                    e.getMessage()
-            );
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<FireStationDto> delete(@RequestBody FireStationDto fireStationDto) {
+        fireStationService.delete(fireStationDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
-    @GetMapping("phoneAlert")
-    public ResponseEntity<?> getByPhone(@RequestParam String station) {
-        try {
-            List<String> result = fireStationService.getPhoneNumbersByStation(station);
-            log.info(
-                    "fireStation {} get phone numbers",
-                    station
-            );
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            log.error(
-                    "fireStation {} get phone error {}",
-                    station,
-                    e.getMessage()
-            );
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    /**
+     * Return all phone number for all persons affiliate to station number
+     * @param station station number
+     * @return Request with a list of phone number for all persons affiliate to station number
+     */
+    @GetMapping("/phoneAlert")
+    public ResponseEntity<List<String>> getByPhone(@RequestParam String station) {
+        return ResponseEntity.ok(fireStationService.getPhoneNumbersByStation(station));
     }
 
+    /**
+     * Return all persons and station number affiliate to FireStation address
+     * @param address FireStation address
+     * @return Request with a list of person and station number affiliate to FireStation address
+     */
     @GetMapping("/fire")
-    public ResponseEntity<?> getByAddress(@RequestParam String address) {
-        try {
-            FireDto result = fireStationService.getByAddress(address);
-            log.info(
-                    "FireStation address {} return persons",
-                    address
-            );
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            log.error(
-                    "fireStation address {} return error {}",
-                    address,
-                    e.getMessage()
-            );
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<FireDto> getByAddress(@RequestParam String address) {
+        return ResponseEntity.ok(fireStationService.getByAddress(address));
     }
 
+    /**
+     * Return all persons grouping by address affiliate to list of the station
+     * @param stations list of station number
+     * @return list of person groupBy address affiliate to list of the station
+     */
     @GetMapping("/flood/stations")
     public ResponseEntity<?> flood(@RequestParam List<String> stations) {
-        try {
-            Map<String, List<PersonFireDto>> result = fireStationService.getFlood(stations);
-            log.info(
-                    "FireStation flood {} return",
-                    stations
-            );
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            log.error("Flood error {}", stations);
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(fireStationService.getFlood(stations));
     }
 }

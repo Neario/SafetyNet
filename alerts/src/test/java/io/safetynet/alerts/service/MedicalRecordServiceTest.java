@@ -60,7 +60,7 @@ public class MedicalRecordServiceTest {
         );
         MedicalRecord medicalRecord = new MedicalRecord();
 
-        when(repository.find("mika","mika")).thenReturn(Optional.of(medicalRecord));
+        when(repository.findByFirstNameAndLastName("mika","mika")).thenReturn(Optional.of(medicalRecord));
         when(mapper.toDto(medicalRecord)).thenReturn(medicalRecordDto);
 
         MedicalRecordDto result = service.update(medicalRecordDto);
@@ -80,7 +80,7 @@ public class MedicalRecordServiceTest {
                 null
         );
         MedicalRecord medicalRecord = new MedicalRecord();
-        when(repository.find("mika","mika")).thenReturn(Optional.of(medicalRecord));
+        when(repository.findByFirstNameAndLastName("mika","mika")).thenReturn(Optional.of(medicalRecord));
 
         service.delete(medicalRecordDto);
 

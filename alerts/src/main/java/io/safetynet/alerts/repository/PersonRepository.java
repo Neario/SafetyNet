@@ -1,5 +1,6 @@
 package io.safetynet.alerts.repository;
 
+import io.safetynet.alerts.model.MedicalRecord;
 import io.safetynet.alerts.model.Person;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -17,11 +18,20 @@ public class PersonRepository {
         return databaseLoader.getDatas().getPersons();
     }
 
-    public Optional<Person> find(String firstName, String lastName) {
+    public Optional<Person> findByFirstNameAndLastName(String firstName, String lastName) {
         return findAll().stream().filter(person ->
                 person.getFirstName().equals(firstName) && person.getLastName().equals(lastName))
                 .findFirst();
     }
+
+    public Optional<Person> findById(String id) {
+        return findAll().stream().filter(p -> p.getId().equals(id)).findFirst();
+    }
+
+    public List<Person> findByAddress(String address) {
+        return databaseLoader.getDatas().getPersons().stream().filter(person -> person.getAddress().equals(address)).toList();
+    }
+
 
     public List<Person> findByAddress(List<String> datas) {
         return databaseLoader.getDatas().getPersons().stream().filter(person ->

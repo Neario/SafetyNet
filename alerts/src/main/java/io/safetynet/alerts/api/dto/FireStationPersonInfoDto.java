@@ -17,4 +17,10 @@ public class FireStationPersonInfoDto {
     private List<PersonInfoDto> persons;
     private int adults;
     private int children;
+
+    public FireStationPersonInfoDto(List<PersonInfoDto> persons, int adults) {
+        this.persons = persons;
+        this.adults = adults;
+        this.children = persons.size() -  adults;
+    }
 }

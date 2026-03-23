@@ -3,7 +3,7 @@ package io.safetynet.alerts.model;
 import lombok.Data;
 
 @Data
-public class Person {
+public class Person implements IdentifiedEntity {
 
     private String lastName;
     private String firstName;
