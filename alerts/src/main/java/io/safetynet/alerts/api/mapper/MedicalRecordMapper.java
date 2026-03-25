@@ -6,34 +6,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MedicalRecordMapper {
-
-    public MedicalRecordDto toDto(MedicalRecord medicalRecord) {
-        return MedicalRecordDto.builder()
-                .firstName(medicalRecord.getFirstName())
-                .lastName(medicalRecord.getLastName())
-                .birthdate(medicalRecord.getBirthdate())
-                .medications(medicalRecord.getMedications())
-                .allergies(medicalRecord.getAllergies())
-                .build();
-    }
-
     public MedicalRecord fromDto(MedicalRecordDto medicalRecordDto) {
 
         MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setFirstName(medicalRecordDto.getFirstName());
-        medicalRecord.setLastName(medicalRecordDto.getLastName());
-        medicalRecord.setBirthdate(medicalRecordDto.getBirthdate());
-        medicalRecord.setMedications(medicalRecordDto.getMedications());
-        medicalRecord.setAllergies(medicalRecordDto.getAllergies());
+        medicalRecord.setFirstName(medicalRecordDto.firstName());
+        medicalRecord.setLastName(medicalRecordDto.lastName());
+        medicalRecord.setBirthdate(medicalRecordDto.birthdate());
+        medicalRecord.setMedications(medicalRecordDto.medications());
+        medicalRecord.setAllergies(medicalRecordDto.allergies());
 
         return medicalRecord;
     }
 
     public void update(MedicalRecord medicalRecord, MedicalRecordDto medicalRecordDto) {
 
-        medicalRecord.setLastName(medicalRecordDto.getLastName());
-        medicalRecord.setBirthdate(medicalRecordDto.getBirthdate());
-        medicalRecord.setMedications(medicalRecordDto.getMedications());
-        medicalRecord.setAllergies(medicalRecordDto.getAllergies());
+        medicalRecord.setLastName(medicalRecordDto.lastName());
+        medicalRecord.setBirthdate(medicalRecordDto.birthdate());
+        medicalRecord.setMedications(medicalRecordDto.medications());
+        medicalRecord.setAllergies(medicalRecordDto.allergies());
     }
 }

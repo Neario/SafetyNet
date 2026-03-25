@@ -1,21 +1,17 @@
 package io.safetynet.alerts.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import io.safetynet.alerts.model.MedicalRecord;
 
 import java.util.List;
 
-@Data
-@JsonIgnoreProperties(ignoreUnknown = false)
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ChildAlertDto {
-    private String firstName;
-    private String lastName;
-    private int age;
-    private List<String> otherFamily;
+public record ChildAlertDto (
+     String firstName,
+     String lastName,
+     int age,
+     List<String> otherFamily
+    ) {
+
+    public ChildAlertDto (MedicalRecord medicalRecord, List<String> otherFamily) {
+        this(medicalRecord.getFirstName(),  medicalRecord.getLastName(), medicalRecord.getAge(), otherFamily);
+    }
 }

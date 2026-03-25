@@ -25,119 +25,69 @@ public class PersonController {
         return service.findAll();
     }
 
+    /**
+     * Return persons minor with a list of other members of their household
+     * @param address address
+     * @return list of minors with a list of other person in their household
+     */
     @GetMapping("/childAlert")
-    public ResponseEntity<?> childAlert(@RequestParam String address) {
-        try {
-            List<ChildAlertDto> result = service.getChildrenByAddress(address);
-            log.info("ChildAlert address : {}", address);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            log.error(
-                    "Error childAlert {}",
-                    address
-            );
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<List<ChildAlertDto>> childAlert(@RequestParam String address) {
+        List<ChildAlertDto> result = service.getChildrenByAddress(address);
+        return ResponseEntity.ok(result);
     }
 
+    /**
+     * Return persons with same lastname and their medical record
+     * @param lastName lastName person
+     * @return list of persons and their medical record
+     */
     @GetMapping("/personInfo")
-    public ResponseEntity<?> getPersonInfo(@RequestParam String lastName) {
-        try{
-            List<PersonInfoWithMedicationDto> result = service.getPersonByLastName(lastName);
-            log.info(
-                    "PersonInfo with lastname {}",
-                    lastName
-            );
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            log.error(
-                    "Error personInfo {}",
-                    lastName
-            );
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<List<PersonInfoWithMedicationDto>> getPersonInfo(@RequestParam String lastName) {
+        List<PersonInfoWithMedicationDto> result = service.getPersonByLastName(lastName);
+        return ResponseEntity.ok(result);
     }
 
+    /**
+     * Return emails from person living in the same city
+     * @param city city person
+     * @return list of email's person in the same city
+     */
     @GetMapping("/communityEmail")
     public ResponseEntity<?> getCommunityEmail(@RequestParam String city) {
-        try {
-            List<String> result = service.getEmailsByCity(city);
-            log.info(
-                    "Emails with city {}",
-                    city
-            );
-            return ResponseEntity.ok(result);
-        }catch (Exception e){
-            log.error(
-                    "Error Emails with city {} : {}",
-                    city,
-                    e.getMessage()
-            );
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        List<String> result = service.getEmailsByCity(city);
+        return ResponseEntity.ok(result);
     }
 
+    /**
+     * Create a person
+     * @param personDto person data (firstName, lastName, email, address, city, phone)
+     * @return person created
+     */
     @PostMapping("/person")
-    public ResponseEntity<?> create(@RequestBody PersonDto personDto) {
-        try {
-            PersonDto result = service.create(personDto);
-            log.info(
-                    "Person created {} {}",
-                    personDto.getFirstName(),
-                    personDto.getLastName()
-            );
-            return ResponseEntity.status(HttpStatus.CREATED).body(result.getFirstName() + " " + result.getLastName());
-        } catch (Exception e) {
-            log.error(
-                    "Error creating person {} {} : {}",
-                    personDto.getFirstName(),
-                    personDto.getLastName(),
-                    e.getMessage()
-            );
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Person already exists");
-        }
-
+    public ResponseEntity<String> create(@RequestBody PersonDto personDto) {
+        PersonDto result = service.create(personDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result.getId());
     }
 
+    /**
+     * Update a person
+     * @param personDto person data
+     * @return person updated
+     */
     @PutMapping("/person")
-    public ResponseEntity<?> update(@RequestBody PersonDto personDto) {
-        try {
+    public ResponseEntity<String> update(@RequestBody PersonDto personDto) {
             PersonDto result = service.update(personDto);
-            log.info(
-                    "Person updated {} {}",
-                    personDto.getFirstName(),
-                    personDto.getLastName()
-            );
-            return ResponseEntity.status(HttpStatus.OK).body(result.getFirstName() + " " + result.getLastName());
-        } catch (Exception e) {
-            log.error(
-                    "Error updating  person {} {} : {}",
-                    personDto.getFirstName(),
-                    personDto.getLastName(),
-                    e.getMessage()
-            );
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+            return ResponseEntity.status(HttpStatus.OK).body(result.getId());
     }
 
+    /**
+     * Delete a person
+     * @param personDto person data
+     * @return Http Response
+     */
     @DeleteMapping("/person")
     public ResponseEntity<?> delete(@RequestBody PersonDto personDto) {
-        try {
-            service.delete(personDto);
-            log.info(
-                    "Person deleted {} {}",
-                    personDto.getFirstName(),
-                    personDto.getLastName()
-            );
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            log.error(
-                    "Error deleting person {} {} : {}",
-                    personDto.getFirstName(),
-                    personDto.getLastName(),
-                    e.getMessage()
-            );
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        service.delete(personDto);
+        return ResponseEntity.ok().build();
     }
 }

@@ -2,7 +2,6 @@ package io.safetynet.alerts.api.dto;
 
 import io.safetynet.alerts.model.MedicalRecord;
 import io.safetynet.alerts.model.Person;
-import org.springframework.util.Assert;
 
 import java.util.List;
 

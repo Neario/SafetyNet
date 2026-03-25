@@ -1,17 +1,12 @@
 package io.safetynet.alerts.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import io.safetynet.alerts.model.FireStation;
 
-@Data
-@JsonIgnoreProperties(ignoreUnknown = false)
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class FireStationDto {
-    private String address;
-    private String station;
+public record FireStationDto (
+     String address,
+     String station
+) {
+    public FireStationDto (FireStation fireStation) {
+        this(fireStation.getAddress(), fireStation.getStation());
+    }
 }

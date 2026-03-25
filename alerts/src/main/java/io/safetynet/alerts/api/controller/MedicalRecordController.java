@@ -21,66 +21,36 @@ public class MedicalRecordController {
         return medicalRecordService.findAll();
     }
 
+    /**
+     * Create a MedicalRecord
+     * @param medicalRecordDto MedicalRecord data (firstName, lastName, birthdate, medications, allergies)
+     * @return MedicalRecord id Created
+     */
     @PostMapping("/medicalrecord")
-    public ResponseEntity<?> create(@RequestBody MedicalRecordDto medicalRecordDto) {
-        try{
-            MedicalRecordDto result = medicalRecordService.create(medicalRecordDto);
-            log.info(
-                    "MedicalRecord created {} {}",
-                    medicalRecordDto.getFirstName(),
-                    medicalRecordDto.getLastName()
-            );
-            return ResponseEntity.status(HttpStatus.CREATED).body(result.getFirstName() + " " + result.getLastName());
-        } catch(Exception e) {
-            log.error(
-                    "Error created medicalRecord {} {} : {}",
-                    medicalRecordDto.getFirstName(),
-                    medicalRecordDto.getLastName(),
-                    e.getMessage()
-            );
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("medicalRecord already exists");
-        }
+    public ResponseEntity<String> create(@RequestBody MedicalRecordDto medicalRecordDto) {
+        MedicalRecordDto result = medicalRecordService.create(medicalRecordDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result.getId());
     }
 
+    /**
+     * Update a MedicalRecord
+     * @param medicalRecordDto MedicalRecord data
+     * @return MedicalRecord id Updated
+     */
     @PutMapping("/medicalrecord")
-    public ResponseEntity<?> update(@RequestBody MedicalRecordDto medicalRecordDto) {
-        try{
-            MedicalRecordDto result = medicalRecordService.update(medicalRecordDto);
-            log.info(
-                    "MedicalRecord updated {} {}",
-                    medicalRecordDto.getFirstName(),
-                    medicalRecordDto.getLastName()
-            );
-            return ResponseEntity.status(HttpStatus.OK).body(result.getFirstName() + " " + result.getLastName());
-        } catch(Exception e) {
-            log.error(
-                    "Error updating medicalRecord {} {} : {}",
-                    medicalRecordDto.getFirstName(),
-                    medicalRecordDto.getLastName(),
-                    e.getMessage()
-            );
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> update(@RequestBody MedicalRecordDto medicalRecordDto) {
+        MedicalRecordDto result = medicalRecordService.update(medicalRecordDto);
+        return ResponseEntity.status(HttpStatus.OK).body(result.getId());
     }
 
+    /**
+     * Delete a MedicalRecord
+     * @param medicalRecordDto MedicalRecord data
+     * @return Http Response
+     */
     @DeleteMapping("/medicalrecord")
     public ResponseEntity<?> delete(@RequestBody MedicalRecordDto medicalRecordDto) {
-        try {
-            medicalRecordService.delete(medicalRecordDto);
-            log.info(
-                    "medicalRecord deleted {} {}",
-                    medicalRecordDto.getFirstName(),
-                    medicalRecordDto.getLastName()
-            );
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            log.error(
-                    "Error deleting medicalRecord {} {} : {}",
-                    medicalRecordDto.getFirstName(),
-                    medicalRecordDto.getLastName(),
-                    e.getMessage()
-            );
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        medicalRecordService.delete(medicalRecordDto);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,22 +1,21 @@
 package io.safetynet.alerts.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import io.safetynet.alerts.model.MedicalRecord;
 
 import java.util.List;
 
-@Data
-@JsonIgnoreProperties(ignoreUnknown = false)
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class MedicalRecordDto {
-    private String firstName;
-    private String lastName;
-    private String birthdate;
-    private List<String> medications;
-    private List<String> allergies;
+public record MedicalRecordDto (
+     String firstName,
+     String lastName,
+     String birthdate,
+     List<String> medications,
+     List<String> allergies
+    ) {
+    public MedicalRecordDto(MedicalRecord medicalRecord) {
+        this(medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getBirthdate(), medicalRecord.getMedications(), medicalRecord.getAllergies());
+    }
+
+    public String getId() {
+        return firstName + "-" + lastName;
+    }
 }

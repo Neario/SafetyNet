@@ -1,9 +1,12 @@
 package io.safetynet.alerts.service;
 
+import io.safetynet.alerts.api.Exception.AlreadyExistsException;
+import io.safetynet.alerts.api.Exception.NotFoundException;
 import io.safetynet.alerts.api.dto.ChildAlertDto;
 import io.safetynet.alerts.api.dto.PersonDto;
 import io.safetynet.alerts.api.dto.PersonInfoWithMedicationDto;
 import io.safetynet.alerts.api.mapper.PersonMapper;
+import io.safetynet.alerts.model.IdentifiedEntity;
 import io.safetynet.alerts.model.MedicalRecord;
 import io.safetynet.alerts.model.Person;
 import io.safetynet.alerts.repository.MedicalRecordRepository;
@@ -12,12 +15,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Service for CRUD opérations Person and queries information
+ */
 @Log4j2
 @Service
 @RequiredArgsConstructor
@@ -27,93 +30,134 @@ public class PersonService {
     private final PersonRepository repository;
     private final PersonMapper mapper;
 
+    /**
+     * Returns all Persons
+     * @return list of PersonDto
+     */
     public List<PersonDto> findAll() {
-
         return repository.findAll()
                 .stream()
-                .map(mapper::toDto)
+                .map(PersonDto::new)
                 .toList();
     }
 
+    /**
+     * Create a new Person
+     * @param personDto Person Data
+     * @return created Person
+     * @throws AlreadyExistsException if Person already exists
+     */
     public PersonDto create(PersonDto personDto) {
-        boolean exists = repository.findByFirstNameAndLastName(personDto.getFirstName(), personDto.getLastName()).isPresent();
+        boolean exists = repository.findById(personDto.getId()).isPresent();
         if (exists) {
-            throw new RuntimeException("Person already exists");
+            throw new AlreadyExistsException("Person already exists");
         }
         Person person = mapper.fromDto(personDto);
         repository.create(person);
-        return mapper.toDto(person);
+        log.info(
+                "Person created {}",
+                person.getId()
+        );
+        return personDto;
     }
 
+    /**
+     * Update a new Person
+     * @param personDto Person Data
+     * @return updated Person
+     * @throws NotFoundException if Person not found
+     */
     public PersonDto update(PersonDto personDto) {
-        Person person = repository.findByFirstNameAndLastName(
-                        personDto.getFirstName(),
-                        personDto.getLastName()
-                ).orElseThrow(
-                        () -> new RuntimeException("Person not exist")
-                );
+        Person person = repository.findById(personDto.getId())
+                .orElseThrow(() -> new NotFoundException("Person not exist"));
         mapper.update(person, personDto);
         repository.update(person);
-        return mapper.toDto(person);
+        log.info(
+                "Person updated {}",
+                person.getId()
+        );
+        return personDto;
     }
 
+    /**
+     * Delete a Person
+     * @param personDto Person Data
+     * @throws NotFoundException if Person not found
+     */
     public void delete(PersonDto personDto) {
-        Person person = repository.findByFirstNameAndLastName(
-                personDto.getFirstName(),
-                personDto.getLastName()
-        ).orElseThrow(
-                () -> new RuntimeException("Person not exist")
+        Person person = repository.findById(personDto.getId())
+                .orElseThrow(() -> new NotFoundException("Person not exist"));
+        log.info(
+                "Person deleted {}",
+                personDto.getId()
         );
         repository.delete(person);
     }
 
+    /**
+     * Returns minors persons and list of other person in same household
+     * @param address address household
+     * @return List of minors and list of other person in household or empty list
+     */
     public List<ChildAlertDto> getChildrenByAddress(String address) {
         List<Person> persons = repository.findByAddress(List.of(address));
-        List<MedicalRecord> medicalRecords = persons.stream().map(person ->
-                        medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()).orElse(null))
-                .filter(Objects::nonNull).toList();
+        List<MedicalRecord> medicalRecords = persons.stream()
+                .map(person ->
+                        medicalRecordRepository.findById(person.getId()).orElse(null)
+                ).filter(Objects::nonNull).toList();
+
+        log.info("ChildAlert address : {}", address);
 
         return medicalRecords.stream().map(medicalRecord -> {
-            LocalDate dateNow = LocalDate.now();
-            LocalDate birthDate = LocalDate.parse(medicalRecord.getBirthdate(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-            int age = Period.between(birthDate, dateNow).getYears();
-            if (age > 18) {
+            if (medicalRecord.isMajor()) {
                 return null;
             }
 
-            List<String> otherFamily = persons.stream().filter(person ->
-                    !(person.getFirstName().equals(medicalRecord.getFirstName())
-                            && person.getLastName().equals(medicalRecord.getLastName()))
-            ).map(person -> person.getFirstName() + "," + person.getLastName()).toList();
-            return new ChildAlertDto(medicalRecord.getFirstName(), medicalRecord.getLastName(), age, otherFamily);
+            List<String> otherFamily = persons.stream()
+                    .map(IdentifiedEntity::getId).filter(id -> !(id.equals(medicalRecord.getId()))
+                    ).toList();
+
+            return new ChildAlertDto(medicalRecord, otherFamily);
+
         }).filter(Objects::nonNull).toList();
     }
 
+    /**
+     * Returns persons and medical record with same lastname
+     * @param lastName lastname person
+     * @return List of person with medical record
+     * @throws NotFoundException if persons with lastname not found
+     */
     public List<PersonInfoWithMedicationDto> getPersonByLastName(String lastName) {
         List<Person> persons = repository.findByLastName(lastName);
         List<PersonInfoWithMedicationDto> personsInfoWithMedicationDto =  persons.stream().map(person -> {
-            MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(),person.getLastName()).orElse(null);
+            MedicalRecord medicalRecord = medicalRecordRepository.findById(person.getId()).orElse(null);
             if (medicalRecord == null) {
                 return null;
             }
-            LocalDate dateNow = LocalDate.now();
-            LocalDate birthDate = LocalDate.parse(medicalRecord.getBirthdate(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-            int age = Period.between(birthDate, dateNow).getYears();
-
-            return new PersonInfoWithMedicationDto(person.getLastName(),person.getAddress(),age, person.getEmail(), medicalRecord.getMedications(), medicalRecord.getAllergies());
+            return new PersonInfoWithMedicationDto(medicalRecord , person.getAddress(), person.getEmail());
         }).filter(Objects::nonNull).toList();
         if (personsInfoWithMedicationDto.isEmpty()) {
-            throw new RuntimeException("Person with lastname : " + lastName + " not found");
+            throw new NotFoundException("Person with lastname : " + lastName + " not found");
         }
+        log.info(
+                "PersonInfo with lastname {}",
+                lastName
+        );
         return personsInfoWithMedicationDto;
     }
 
+    /**
+     * Returns emails from person living in the same city
+     * @param city city person
+     * @return list of email's person or empty list
+     */
     public List<String> getEmailsByCity(String city) {
         List<Person> persons = repository.findByCity(city);
-        // todo : si pas de mails trouvés , retourne une liste vide
-//        if (persons.isEmpty()) {
-//            throw new RuntimeException("Person with city : " + city + " not found");
-//        }
+        log.info(
+                "Emails with city {}",
+                city
+        );
         return persons.stream().map(Person::getEmail).toList();
     }
 }

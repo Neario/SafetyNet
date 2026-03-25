@@ -40,8 +40,8 @@ public class FireStationService {
     public List<FireStationDto> findAll()
     {
         return fireStationRepository.findAll()
-                .stream().
-                map(fireStationMapper::toDto)
+                .stream()
+                .map(FireStationDto::new)
                 .toList();
     }
 
@@ -56,10 +56,10 @@ public class FireStationService {
         fireStationRepository.create(fireStation);
         log.info(
                 "FireStation Created {} : {}",
-                fireStation.getAddress(),
-                fireStationDto.getStation()
+                fireStationDto.address(),
+                fireStationDto.station()
         );
-        return fireStationMapper.toDto(fireStation);
+        return fireStationDto;
     }
 
     /**
@@ -71,7 +71,7 @@ public class FireStationService {
     public FireStationDto update(FireStationDto fireStationDto) {
         FireStation fireStation =
                 fireStationRepository
-                        .find(fireStationDto.getAddress())
+                        .find(fireStationDto.address())
                         .orElseThrow(() -> new NotFoundException("FireStation not found")
         );
         fireStationMapper.update(fireStation, fireStationDto);
@@ -79,9 +79,9 @@ public class FireStationService {
         log.info(
                 "FireStation Updated {} : {}",
                 fireStation.getAddress(),
-                fireStationDto.getStation()
+                fireStationDto.station()
         );
-        return fireStationMapper.toDto(fireStation);
+        return fireStationDto;
     }
 
     /**
@@ -92,7 +92,7 @@ public class FireStationService {
     public void delete(FireStationDto fireStationDto) {
         FireStation fireStation =
                 fireStationRepository
-                        .find(fireStationDto.getAddress())
+                        .find(fireStationDto.address())
                         .orElseThrow(() -> new NotFoundException("FireStation not found"));
         fireStationRepository.delete(fireStation);
         log.info(
@@ -132,8 +132,7 @@ public class FireStationService {
      */
     public List<String> getPhoneNumbersByStation(final String station) {
         List<String> addresses =
-                fireStationRepository
-                        .findByStation(station);
+                fireStationRepository.findByStation(station);
         if (addresses.isEmpty()) {
             throw  new NotFoundException("station with number " + station + "not found");
         }

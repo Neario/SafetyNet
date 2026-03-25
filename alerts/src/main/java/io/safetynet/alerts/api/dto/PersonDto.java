@@ -1,21 +1,28 @@
 package io.safetynet.alerts.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import io.safetynet.alerts.model.Person;
 
-@Data
-@JsonIgnoreProperties(ignoreUnknown = false)
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class PersonDto {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String address;
-    private String city;
-    private String phone;
+public record PersonDto (
+     String firstName,
+     String lastName,
+     String email,
+     String address,
+     String city,
+     String phone
+     ) {
+
+    public PersonDto (Person person) {
+        this(
+                person.getFirstName(),
+                person.getLastName(),
+                person.getEmail(),
+                person.getAddress(),
+                person.getCity(),
+                person.getPhone()
+        );
+    }
+
+    public String getId() {
+        return firstName + "-" + lastName;
+    }
 }
