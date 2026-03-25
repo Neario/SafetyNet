@@ -37,10 +37,24 @@ public class MedicalRecordControllerTestIT {
         mockMvc.perform(
                 post("/medicalrecord")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                objectMapper.writeValueAsString(medicalRecordDto)
-                        )
+                        .content(objectMapper.writeValueAsString(medicalRecordDto))
         ).andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testCreateMedicalRecordAlreadyExist() throws Exception {
+        MedicalRecordDto medicalRecordDto = new MedicalRecordDto(
+                "John",
+                "Boyd",
+                "05/12/1988",
+                List.of(new String[]{"paracetamol", "nurofen"}),
+                List.of(new String[]{"pollen"})
+        );
+        mockMvc.perform(
+                post("/medicalrecord")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(medicalRecordDto))
+        ).andExpect(status().isConflict());
     }
 
     @Test
@@ -55,10 +69,24 @@ public class MedicalRecordControllerTestIT {
         mockMvc.perform(
                 put("/medicalrecord")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                objectMapper.writeValueAsString(medicalRecordDto)
-                        )
+                        .content(objectMapper.writeValueAsString(medicalRecordDto))
         ).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpdateMedicalRecordNotFound() throws Exception {
+        MedicalRecordDto medicalRecordDto = new MedicalRecordDto(
+                "Mika",
+                "notfound",
+                "03/06/1984",
+                List.of(new String[]{"paracetamol", "nurofen"}),
+                List.of(new String[]{"pollen"})
+        );
+        mockMvc.perform(
+                put("/medicalrecord")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(medicalRecordDto))
+        ).andExpect(status().isNotFound());
     }
 
     @Test
@@ -69,12 +97,23 @@ public class MedicalRecordControllerTestIT {
                 null,
                 null,
                 null);
-        mockMvc.perform(
-                delete("/medicalrecord")
+        mockMvc.perform(delete("/medicalrecord")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                objectMapper.writeValueAsString(medicalRecordDto)
-                        )
+                        .content( objectMapper.writeValueAsString(medicalRecordDto))
         ).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testDeleteMedicalRecordNotFound() throws Exception {
+        MedicalRecordDto medicalRecordDto = new MedicalRecordDto(
+                "mika",
+                "notfound",
+                null,
+                null,
+                null);
+        mockMvc.perform(delete("/medicalrecord")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content( objectMapper.writeValueAsString(medicalRecordDto))
+        ).andExpect(status().isNotFound());
     }
 }

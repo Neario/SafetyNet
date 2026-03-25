@@ -60,7 +60,6 @@ public class FireStationServiceTest {
         FireStation fireStation = new FireStation();
 
         when(mapper.fromDto(fireStationDto)).thenReturn(fireStation);
-        when(mapper.toDto(fireStation)).thenReturn(fireStationDto);
 
         FireStationDto result = service.create(fireStationDto);
 
@@ -94,13 +93,13 @@ public class FireStationServiceTest {
         FireStation fireStation = new FireStation();
 
         when(repository.find("mikaAddress")).thenReturn(Optional.of(fireStation));
-        when(mapper.toDto(fireStation)).thenReturn(fireStationDto);
 
         FireStationDto result = service.update(fireStationDto);
 
         verify(repository).update(fireStation);
+        verify(mapper).update(fireStation, fireStationDto);
 
-        assertEquals("mikaAddress", result.getAddress());
+        assertEquals("mikaAddress", result.address());
     }
 
     @Test
@@ -162,8 +161,8 @@ public class FireStationServiceTest {
         FireStationPersonInfoDto result = service.getPersonsByStation("1");
 
         assertThat(result).isNotNull();
-        assertThat(result.getChildren()).isEqualTo(1);
-        assertThat(result.getAdults()).isEqualTo(0);
+        assertThat(result.children()).isEqualTo(1);
+        assertThat(result.adults()).isEqualTo(0);
     }
 
     @ParameterizedTest
@@ -196,8 +195,8 @@ public class FireStationServiceTest {
         FireDto result = service.getByAddress("1509 Culver St");
 
         assertThat(result).isNotNull();
-        assertThat(result.getStation()).isEqualTo("1");
-        assertThat(result.getPersons()).hasSize(1);
+        assertThat(result.station()).isEqualTo("1");
+        assertThat(result.persons()).hasSize(1);
     }
 
     @Test

@@ -34,13 +34,25 @@ public class PersonControllerTestIT {
                 "mikaAddress",
                 "MikaCity",
                 "MikaPhone");
-        mockMvc.perform(
-                        post("/person")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        objectMapper.writeValueAsString(personDto)
-                                )
-                ).andExpect(status().isCreated());
+        mockMvc.perform(post("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(personDto))
+        ).andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testCreatePersonAlreadyExist() throws Exception {
+        PersonDto personDto = new PersonDto(
+                "John",
+                "Boyd",
+                "mika@mika.mail",
+                "mikaAddress",
+                "MikaCity",
+                "MikaPhone");
+        mockMvc.perform(post("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(personDto))
+        ).andExpect(status().isConflict());
     }
 
     @Test
@@ -52,30 +64,67 @@ public class PersonControllerTestIT {
                 "JohnAddress",
                 "JohnCity",
                 "JohnPhone");
-        mockMvc.perform(
-                        put("/person")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        objectMapper.writeValueAsString(personDto)
-                                )
-                ).andExpect(status().isOk());
+        mockMvc.perform(put("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(personDto))
+        ).andExpect(status().isOk());
     }
 
     @Test
-    public void testDeletePerson() throws Exception {
+    public void testUpdatePersonNotFound() throws Exception {
+        PersonDto personDto = new PersonDto(
+                "Mika",
+                "NotFound",
+                "John@John.mail",
+                "JohnAddress",
+                "JohnCity",
+                "JohnPhone");
+        mockMvc.perform(put("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(personDto))
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testDeletePersonNotFound() throws Exception {
         PersonDto personDto = new PersonDto(
                 "John",
-                "Boyd",
+                "NotFound",
                 null,
                 null,
                 null,
                 null);
-        mockMvc.perform(
-                delete("/person")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                objectMapper.writeValueAsString(personDto)
-                        )
+        mockMvc.perform(delete("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(personDto))
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testChildAlert() throws Exception {
+        mockMvc.perform(get("/childAlert")
+                    .param("address", "1509 Culver St")
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    void testPersonInfo() throws Exception {
+        mockMvc.perform(get("/personInfo")
+                .param("lastName", "Boyd")
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    void testPersonInfo_notFound() throws Exception {
+        mockMvc.perform(get("/personInfo")
+                .param("lastName", "notFound")
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testCommunityEmail() throws Exception {
+        mockMvc.perform(get("/communityEmail")
+                .param("city", "Culver")
         ).andExpect(status().isOk());
     }
 }

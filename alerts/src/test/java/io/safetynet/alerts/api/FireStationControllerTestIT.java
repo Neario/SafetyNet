@@ -48,9 +48,7 @@ public class FireStationControllerTestIT {
         mockMvc.perform(
                 post("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                objectMapper.writeValueAsString(fireStationDto)
-                        )
+                        .content(objectMapper.writeValueAsString(fireStationDto))
         ).andExpect(status().isCreated());
     }
 
@@ -62,9 +60,7 @@ public class FireStationControllerTestIT {
         mockMvc.perform(
                 post("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                objectMapper.writeValueAsString(fireStationDto)
-                        )
+                        .content(objectMapper.writeValueAsString(fireStationDto))
         ).andExpect(status().isConflict());
     }
 
