@@ -103,7 +103,7 @@ public class PersonControllerTestIT {
     @Test
     void testChildAlert() throws Exception {
         mockMvc.perform(get("/childAlert")
-                    .param("address", "1509 Culver St")
+                .param("address", "1509 Culver St")
         ).andExpect(status().isOk());
     }
 

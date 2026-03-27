@@ -1,6 +1,7 @@
 package io.safetynet.alerts.api;
 
 import io.safetynet.alerts.api.dto.FireStationDto;
+import io.safetynet.alerts.repository.DatabaseLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,21 @@ public class FireStationControllerTestIT {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    DatabaseLoader loader;
+
     @BeforeEach
     void resetJson() throws Exception {
+        Path source = Path.of("src/test/resources/data-test-init.json");
+
+        Path target = Path.of("target/test-classes/data-test.json");
 
         Files.copy(
-                Path.of("src/test/resources/data-test.json"),
-                Path.of("target/test-data.json"),
+                source,
+                target,
                 StandardCopyOption.REPLACE_EXISTING
         );
+        loader.reload();
     }
 
     @Test
@@ -54,21 +62,18 @@ public class FireStationControllerTestIT {
 
     @Test
     public void testCreateFireStationAlreadyExists() throws Exception {
-        FireStationDto fireStationDto = new FireStationDto(
-                "1509 Culver St",
-                "3");
-        mockMvc.perform(
-                post("/firestation")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(fireStationDto))
+        FireStationDto fireStationDto = new FireStationDto("1509 Culver St", "3");
+        mockMvc.perform(post("/firestation")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(fireStationDto))
         ).andExpect(status().isConflict());
     }
 
     @Test
     public void testUpdateFireStation() throws Exception {
         FireStationDto fireStationDto = new FireStationDto(
-                "834 Binoc Ave",
-                "5");
+                "112 Steppes Pl",
+                "3");
         mockMvc.perform(
                 put("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -95,7 +100,7 @@ public class FireStationControllerTestIT {
     @Test
     public void testDeleteFireStation() throws Exception {
         FireStationDto fireStationDto = new FireStationDto(
-                "834 Binoc Ave",
+                "947 E. Rose Dr",
                 null);
         mockMvc.perform(
                 delete("/firestation")
@@ -140,7 +145,7 @@ public class FireStationControllerTestIT {
     void testGetPhoneNumbersByStationNotFound() throws Exception {
         mockMvc.perform(
                 get("/phoneAlert")
-                        .param("station", "4")
+                        .param("station", "6")
         ).andExpect(status().isNotFound());
     }
 

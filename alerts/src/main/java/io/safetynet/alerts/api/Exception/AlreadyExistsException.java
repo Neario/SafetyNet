@@ -1,7 +1,9 @@
 package io.safetynet.alerts.api.Exception;
 
-public class AlreadyExistsException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class AlreadyExistsException extends AbstractDomainException {
     public AlreadyExistsException(String message) {
-        super(message);
+        super(message, HttpStatus.CONFLICT);
     }
 }

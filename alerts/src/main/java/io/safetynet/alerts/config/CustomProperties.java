@@ -9,4 +9,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app")
 public class CustomProperties {
     private String apiUrl;
+    private boolean enableSave;
 }

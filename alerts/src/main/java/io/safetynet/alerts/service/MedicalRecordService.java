@@ -24,6 +24,7 @@ public class MedicalRecordService {
 
     /**
      * Returns all MedicalRecord
+     *
      * @return list of MedicalRecord
      */
     public List<MedicalRecordDto> findAll() {
@@ -35,6 +36,7 @@ public class MedicalRecordService {
 
     /**
      * Create a new MedicalRecord
+     *
      * @param medicalRecordDto MedicalRecord Data
      * @return created MedicalRecord
      * @throws AlreadyExistsException if MedicalRecord already exists
@@ -55,27 +57,25 @@ public class MedicalRecordService {
 
     /**
      * Update a MedicalRecord
+     *
      * @param medicalRecordDto MedicalRecord data to update
      * @return updated MedicalRecord
      * @throws NotFoundException if the FireStation not found
      */
     public MedicalRecordDto update(MedicalRecordDto medicalRecordDto) {
-        MedicalRecord medicalRecord = medicalRecordRepository.findById(
-                medicalRecordDto.getId()
-        ).orElseThrow(
-                () -> new NotFoundException("MedicalRecord not found")
-        );
+        MedicalRecord medicalRecord = medicalRecordRepository.findById(medicalRecordDto.getId())
+                .orElseThrow(() -> new NotFoundException("MedicalRecord not found"));
+
         medicalRecordMapper.update(medicalRecord, medicalRecordDto);
         medicalRecordRepository.update(medicalRecord);
-        log.info(
-                "MedicalRecord updated {}",
-                medicalRecordDto.getId()
-        );
+
+        log.info("MedicalRecord updated {}", medicalRecordDto.getId());
         return medicalRecordDto;
     }
 
     /**
      * Delete a MedicalRecord
+     *
      * @param medicalRecordDto MedicalRecord to delete
      * @throws NotFoundException if MedicalRecord not found
      */

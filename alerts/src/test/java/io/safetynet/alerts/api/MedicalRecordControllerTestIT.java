@@ -98,8 +98,8 @@ public class MedicalRecordControllerTestIT {
                 null,
                 null);
         mockMvc.perform(delete("/medicalrecord")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content( objectMapper.writeValueAsString(medicalRecordDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(medicalRecordDto))
         ).andExpect(status().isOk());
     }
 
@@ -113,7 +113,7 @@ public class MedicalRecordControllerTestIT {
                 null);
         mockMvc.perform(delete("/medicalrecord")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content( objectMapper.writeValueAsString(medicalRecordDto))
+                .content(objectMapper.writeValueAsString(medicalRecordDto))
         ).andExpect(status().isNotFound());
     }
 }
