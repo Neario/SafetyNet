@@ -1,13 +1,10 @@
 package io.safetynet.alerts.service;
 
-import io.safetynet.alerts.api.Exception.AlreadyExistsException;
-import io.safetynet.alerts.api.Exception.NotFoundException;
-import io.safetynet.alerts.api.dto.FireStationDto;
+import io.safetynet.alerts.api.exception.AlreadyExistsException;
+import io.safetynet.alerts.api.exception.NotFoundException;
 import io.safetynet.alerts.api.dto.MedicalRecordDto;
-import io.safetynet.alerts.api.dto.PersonDto;
 import io.safetynet.alerts.api.mapper.MedicalRecordMapper;
 import io.safetynet.alerts.model.MedicalRecord;
-import io.safetynet.alerts.model.Person;
 import io.safetynet.alerts.repository.MedicalRecordRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

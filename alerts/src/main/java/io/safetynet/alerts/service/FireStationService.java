@@ -1,7 +1,7 @@
 package io.safetynet.alerts.service;
 
-import io.safetynet.alerts.api.Exception.AlreadyExistsException;
-import io.safetynet.alerts.api.Exception.NotFoundException;
+import io.safetynet.alerts.api.exception.AlreadyExistsException;
+import io.safetynet.alerts.api.exception.NotFoundException;
 import io.safetynet.alerts.api.dto.*;
 import io.safetynet.alerts.api.mapper.FireStationMapper;
 import io.safetynet.alerts.model.FireStation;

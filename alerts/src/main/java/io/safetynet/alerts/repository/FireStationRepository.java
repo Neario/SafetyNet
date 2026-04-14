@@ -1,6 +1,6 @@
 package io.safetynet.alerts.repository;
 
-import io.safetynet.alerts.api.Exception.AlreadyExistsException;
+import io.safetynet.alerts.api.exception.AlreadyExistsException;
 import io.safetynet.alerts.model.FireStation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

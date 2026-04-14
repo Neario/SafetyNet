@@ -1,13 +1,11 @@
 package io.safetynet.alerts.service;
 
-import io.safetynet.alerts.api.Exception.AlreadyExistsException;
-import io.safetynet.alerts.api.Exception.NotFoundException;
+import io.safetynet.alerts.api.exception.AlreadyExistsException;
+import io.safetynet.alerts.api.exception.NotFoundException;
 import io.safetynet.alerts.api.dto.ChildAlertDto;
-import io.safetynet.alerts.api.dto.FireStationDto;
 import io.safetynet.alerts.api.dto.PersonDto;
 import io.safetynet.alerts.api.dto.PersonInfoWithMedicationDto;
 import io.safetynet.alerts.api.mapper.PersonMapper;
-import io.safetynet.alerts.model.FireStation;
 import io.safetynet.alerts.model.MedicalRecord;
 import io.safetynet.alerts.model.Person;
 import io.safetynet.alerts.repository.MedicalRecordRepository;

@@ -1,4 +1,4 @@
-package io.safetynet.alerts.api.Exception;
+package io.safetynet.alerts.api.exception;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
